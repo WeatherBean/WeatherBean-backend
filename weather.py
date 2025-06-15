@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SERVICE_KEY = os.getenv("WEATHER_SERVICE_KEY")
-
 def get_weather(city_name, nx, ny):
     today = datetime.datetime.now().strftime("%Y%m%d")
 
