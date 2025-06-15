@@ -1,38 +1,12 @@
-from flask import Flask, request
-from db import get_connection
+from flask import Flask
+from webhook import webhook  # blueprint import
 
 app = Flask(__name__)
+app.register_blueprint(webhook)
 
-#db 저장 함수(채은)
-def save_user(kakao_id, region):
-    pass
+@app.route("/")
+def home():
+    return "✅ 카카오 챗봇 Webhook 서버 작동 중!"
 
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    data = request.get_json()
-    user_id = data.get("userRequest", {}).get("user", {}).get("id")
-    region = data.get("action", {}).get("params", {}).get("지역")
-
-    if user_id and region:
-        save_user(user_id, region)
-        return {
-            "version": "2.0",
-            "template": {
-                "outputs": [{
-                    "simpleText": {
-                        "text": f"{region} 지역으로 설정했어요! 내일부터 날씨를 알려드릴게요 ☀️"
-                    }
-                }]
-            }
-        }
-    else:
-        return {
-            "version": "2.0",
-            "template": {
-                "outputs": [{
-                    "simpleText": {
-                        "text": "지역 설정에 실패했어요."
-                    }
-                }]
-            }
-        }
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

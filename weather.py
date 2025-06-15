@@ -1,15 +1,19 @@
 import requests
 import datetime
+import os
+from dotenv import load_dotenv
 
-def get_weather(city_name, nx, ny, service_key):
-    # 오늘 날짜
+load_dotenv()
+
+SERVICE_KEY = os.getenv("WEATHER_SERVICE_KEY")
+
+def get_weather(city_name, nx, ny):
     today = datetime.datetime.now().strftime("%Y%m%d")
 
-    # 기본 api키
     url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
-    
+
     params = {
-        "serviceKey": service_key,
+        "serviceKey": SERVICE_KEY,
         "dataType": "JSON",
         "numOfRows": "1000",
         "pageNo": "1",
@@ -18,11 +22,11 @@ def get_weather(city_name, nx, ny, service_key):
         "nx": nx,
         "ny": ny
     }
-    
+
     response = requests.get(url, params=params)
     if response.status_code != 200:
         return f"{city_name}: API 호출 실패 ({response.status_code})"
-    
+
     items = response.json().get('response', {}).get('body', {}).get('items', {}).get('item', [])
     tmx, tmn, pop_list = None, None, []
 
